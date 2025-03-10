@@ -1,1 +1,1 @@
-# management-income-expense-22ct112
+Ứng dụng quản lý thu chi của lớp 22CT112
