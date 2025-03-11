@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+const validUsers = [
+  { email: 'admin@gmail.com', phone: '0123456789', password: '987654321' },
+  { email: 'user@example.com', phone: '0987654321', password: '123456789' },
+];
+
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +28,14 @@ const LoginScreen = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log('Đăng nhập thành công với:', email, password);
+      const user = validUsers.find(
+        (u) => (u.email === email || u.phone === email) && u.password === password
+      );
+      if (user) {
+        console.log('Đăng nhập thành công với:', email);
+      } else {
+        setError('Tài khoản hoặc mật khẩu không đúng');
+      }
     }
   };
 
