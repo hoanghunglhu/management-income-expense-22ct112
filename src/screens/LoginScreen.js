@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => { // Thêm navigation prop
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
@@ -24,6 +24,9 @@ const LoginScreen = () => {
   const handleSubmit = () => {
     if (validateForm()) {
       console.log('Đăng nhập thành công với:', email, password);
+      
+      // Thêm dòng này để chuyển sang màn hình chính
+      navigation.navigate('MainApp');
     }
   };
 
