@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Đăng Nhập</Text>
-      
+
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email hoặc Số điện thoại</Text>
         <TextInput
@@ -69,14 +69,14 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry={hidePassword}
             autoCapitalize="none"
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.eyeIcon}
             onPress={() => setHidePassword(!hidePassword)}
           >
-            <Ionicons 
-              name={hidePassword ? 'eye-off' : 'eye'} 
-              size={24} 
-              color="#666" 
+            <Ionicons
+              name={hidePassword ? 'eye-off' : 'eye'}
+              size={24}
+              color="#666"
             />
           </TouchableOpacity>
         </View>
@@ -84,7 +84,7 @@ const LoginScreen = ({ navigation }) => {
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.loginButton}
         onPress={handleSubmit}
         activeOpacity={0.8}
