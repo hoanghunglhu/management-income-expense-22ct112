@@ -13,6 +13,27 @@ const LoginScreen = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [error, setError] = useState('');
 
+  const handleLogin = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('userData');
+      if (!storedUser) {
+        Alert.alert('Tài khoản không tồn tại. Vui lòng đăng ký.');
+        return;
+      }
+
+      const { email: savedEmail, password: savedPassword, token } = JSON.parse(storedUser);
+
+      if (email === savedEmail && password === savedPassword) {
+        await AsyncStorage.setItem('userToken', token); // Lưu token để đăng nhập
+        navigation.replace('MainScreen');
+      } else {
+        Alert.alert('Lỗi', 'Sai email hoặc mật khẩu');
+      }
+    } catch (error) {
+      console.error('Lỗi đăng nhập:', error);
+    }
+  };
+
   const validateForm = () => {
     if (!email || !password) {
       setError('Vui lòng điền đầy đủ thông tin');

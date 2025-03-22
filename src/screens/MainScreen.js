@@ -7,6 +7,10 @@ import { LineChart } from 'react-native-chart-kit';
 const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("userToken"); // Xóa token khi đăng xuất
+    navigation.replace("LoginScreen");
+  };
   const [activeTab, setActiveTab] = useState('Home');
   
   return (
