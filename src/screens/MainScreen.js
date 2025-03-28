@@ -1,67 +1,111 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import { LineChart } from 'react-native-chart-kit';
+import HomeScreen from './HomeScreen';
+import StatisticsScreen from './StatisticsScreen';
+import AddTransactionScreen from './AddTransactionScreen';
+import ReportsScreen from './ReportsScreen';
+import SettingsScreen from './SettingsScreen';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, StyleSheet } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
-  const [activeTab, setActiveTab] = useState('Home');
-  
   return (
-    <View style={styles.container}>
-      {/* Thông tin chủ tài khoản */}
-      <View style={styles.accountInfo}>
-        <Text style={styles.accountText}>Chủ tài khoản: Nguyễn Văn A</Text>
-      </View>
-      
-      {/* Chi tiết chi tiêu với ScrollView */}
-      <ScrollView style={styles.detailContainer}>
-        <Text>Chi tiết chi tiêu...</Text>
-      </ScrollView>
-      
-      {/* Biểu đồ thu nhập - chi tiêu */}
-      <LineChart
-        data={{
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-          datasets: [{ data: [500, 700, 800, 600, 900] }],
-        }}
-        width={300}
-        height={220}
-        chartConfig={{
-          backgroundColor: '#e26a00',
-          backgroundGradientFrom: '#fb8c00',
-          backgroundGradientTo: '#ffa726',
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: styles.tabBar,
+        tabBarActiveTintColor: '#EC407A',
+        tabBarInactiveTintColor: '#999',
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Tổng kê',
+                    tabBarLabelStyle: {
+            fontSize: 12,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="view-dashboard-outline" color={color} size={size} />
+          ),
         }}
       />
-      
-      {/* Thanh navigation cố định */}
-      <View style={styles.navbar}>
-        {['Home', 'Stats', 'Settings'].map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            style={[styles.navItem, activeTab === tab && styles.activeTab]}
-          >
-            <Ionicons name={tab === 'Home' ? 'home' : tab === 'Stats' ? 'stats-chart' : 'settings'} size={24} />
-            <Text>{tab}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+      <Tab.Screen
+        name="Statistics"
+        component={StatisticsScreen}
+        options={{
+          tabBarLabel: 'Sổ giao dịch',
+          tabBarLabelStyle: {
+            fontSize: 12,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="book-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddTransaction"
+        component={AddTransactionScreen}
+        options={{
+          tabBarLabel: 'Thống kê',
+          tabBarLabelStyle: {
+            fontSize: 12,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <View style={styles.addButton}>
+              <Icon name="plus" color="#fff" size={20} />
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Reports"
+        component={ReportsScreen}
+        options={{
+          tabBarLabel: 'Báo cáo',
+          tabBarLabelStyle: {
+            fontSize: 12,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="chart-pie" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: 'Cài đặt',
+          tabBarLabelStyle: {
+            fontSize: 12,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="cog-outline" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-  accountInfo: { padding: 10, backgroundColor: '#ddd', marginBottom: 10 },
-  accountText: { fontSize: 16, fontWeight: 'bold' },
-  detailContainer: { flex: 1, marginBottom: 10 },
-  navbar: { flexDirection: 'row', justifyContent: 'space-around', padding: 10, backgroundColor: '#ccc' },
-  navItem: { alignItems: 'center' },
-  activeTab: { borderBottomWidth: 2, borderBottomColor: 'blue' },
+  tabBar: {
+    backgroundColor: '#272836',
+    borderTopWidth: 0,
+    elevation: 0,
+    height: 55,
+  },
+  addButton: {
+    backgroundColor: '#EC407A',
+    width: 25,
+    height: 25,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default MainScreen;

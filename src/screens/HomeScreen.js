@@ -176,7 +176,8 @@ const HomeScreen = () => {
           
           <LineChart
             data={chartData}
-            width={screenWidth - 70} // Thu nhỏ để có chỗ cho trục Y
+
+            width={screenWidth - 80} // Thu nhỏ để có chỗ cho trục Y
             height={180}
             chartConfig={{
               backgroundColor: '#272836',
@@ -326,8 +327,9 @@ const styles = StyleSheet.create({
   },
   // Styles for Y-axis
   chartWithYAxis: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row', // Hiển thị trục Y và biểu đồ trên cùng một hàng
+    alignItems: 'center', // Căn giữa theo chiều dọc
+    marginLeft: -10, // Giảm khoảng cách giữa trục Y và biểu đồ
   },
   yAxis: {
     width: 40,
@@ -338,8 +340,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   yAxisLabel: {
-    color: '#fff',
-    fontSize: 10,
+    fontSize: 12,
+    color: 'white',
+    marginBottom: 15, // Giảm khoảng cách giữa các nhãn Y
+    textAlign: 'right',
   },
   // Styles for expansion section
   transactionsContainer: {

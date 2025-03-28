@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 const validUsers = [
   { email: 'admin@gmail.com', phone: '0123456789', password: '987654321' },
   { email: 'user@example.com', phone: '0987654321', password: '123456789' },
+  { email: '1', phone: '0987654321', password: '1' },
 ];
 
 const LoginScreen = ({ navigation }) => {
