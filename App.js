@@ -1,121 +1,28 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import MainScreen from './src/screens/MainScreen';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LoginScreen from './src/screens/LoginScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import StatisticsScreen from './src/screens/StatisticsScreen';
-import AddTransactionScreen from './src/screens/AddTransactionScreen';
-import ReportsScreen from './src/screens/ReportsScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { View, StyleSheet } from 'react-native';
-
-const Stack = createStackNavigator();
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { View, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import mhdmc from "./manhinhdanhmucchi";
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#EC407A',
-        tabBarInactiveTintColor: '#999',
-        headerShown: false,
-        tabBarShowLabel: true,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Tổng kê',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="view-dashboard-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Statistics"
-        component={StatisticsScreen}
-        options={{
-          tabBarLabel: 'Sổ giao dịch',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="book-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="AddTransaction"
-        component={AddTransactionScreen}
-        options={{
-          tabBarLabel: 'Thống kê',
-          tabBarIcon: ({ color, size }) => (
-            <View style={styles.addButton}>
-              <Icon name="plus" color="#fff" size={size} />
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Reports"
-        component={ReportsScreen}
-        options={{
-          tabBarLabel: 'Báo cáo',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="chart-pie" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: 'Cài đặt',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="cog-outline" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
+// Màn hình giả lập
+const TransactionsScreen = () => <View><Text>Giao dịch</Text></View>;
+const WalletScreen = () => <View><Text>Ví tiền</Text></View>;
+const StatisticsScreen = () => <View><Text>Thống kê</Text></View>;
+
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={MainScreen}
-          options={{ headerShown: false }} // Ẩn header cho MainScreen nếu không cần
-        />
-      </Stack.Navigator >
-    </NavigationContainer >
+      <Tab.Navigator
+      >
+        <Tab.Screen name="Giao dịch" component={TransactionsScreen} />
+        <Tab.Screen name="Ví tiền" component={WalletScreen} />
+        <Tab.Screen name="Thống kê" component={StatisticsScreen} />
+        <Tab.Screen name="Cài đặt" component={mhdmc} />
+       
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: '#272836',
-    borderTopWidth: 0,
-    elevation: 0,
-    height: 60,
-  },
-  addButton: {
-    backgroundColor: '#EC407A',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
