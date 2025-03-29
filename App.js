@@ -5,6 +5,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import MainScreen from './src/screens/MainScreen'; 
 import StatisticsScreen from './src/screens/StatisticsScreen';
 import AddTransactionScreen from './src/screens/AddTransactionScreen'; 
+import { TransactionProvider } from './TransactionContext'; // Import
 // cài thư viện thêm = code : npm install @react-navigation/native @react-navigation/stack react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated react-native-vector-icons
 // cài thêm thư viện npm install react-native-chart-kit
 // npm install @react-native-async-storage/async-storage
