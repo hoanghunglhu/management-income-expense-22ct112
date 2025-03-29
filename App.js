@@ -2,8 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import mhdmc from "./manhinhdanhmucchi";
+import mhdmc from "./src/screens/manhinhdanhmucchi";
 const Tab = createBottomTabNavigator();
 
 // Màn hình giả lập
