@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -51,7 +52,7 @@ const BottomTabNavigator = ({ transactions, setTransactions }) => {
       <Tab.Screen
         name="AddTransaction"
         options={{
-          tabBarLabel: 'Thêm', // Sửa lại label cho đúng với chức năng
+          tabBarLabel: '', // Sửa lại label cho đúng với chức năng
           tabBarIcon: ({ color, size }) => (
             <View style={styles.addButton}>
               <Icon name="plus" color="#fff" size={size} />
@@ -100,8 +101,8 @@ export default function App() {
       ],
     },
     {
-      date: '25/04/2022',
-      dayOfWeek: 'Thứ hai',
+      date: '29/03/2025',
+      dayOfWeek: 'Thứ Bảy', // Đã sửa từ 'Thứ hai' thành 'Thứ Bảy' cho đúng
       items: [
         { id: '4', icon: '👩‍⚕️', title: 'Chữa bệnh', subtitle: 'Thú cưng', amount: '-500,000 đ', wallet: 'Ví của tôi', type: 'expense' },
         { id: '5', icon: '🚌', title: 'Di chuyển', subtitle: 'Riêng tôi', amount: '-20,000 đ', wallet: 'Ví của tôi', type: 'expense' },

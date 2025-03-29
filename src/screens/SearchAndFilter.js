@@ -279,13 +279,12 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     backgroundColor: '#3498db',
-    height: 40, // Đồng bộ chiều cao với thanh tìm kiếm
-    width: 40, // Đặt chiều rộng bằng chiều cao để tạo hình vuông
+    height: 44, // Đồng bộ chiều cao với thanh tìm kiếm
+    width: 44, // Đặt chiều rộng bằng chiều cao để tạo hình vuông
     borderRadius: 10,
     marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 1,
   },
   modalContainer: {
     flex: 1,

@@ -1,16 +1,16 @@
+// src/screens/HomeScreen.js
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  Image, 
-  ScrollView, 
-  TouchableOpacity 
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import SearchAndFilter from './SearchAndFilter';
-import SearchBar  from '../components/SearchBar';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -19,11 +19,18 @@ const COLORS = {
   expense: '#EC407A',
 };
 
-// Component HomeScreen: Hiển thị biểu đồ và danh sách giao dịch
 const HomeScreen = ({ navigation, transactions }) => {
   const [expandedDate, setExpandedDate] = useState(null);
+  const [filteredTransactions, setFilteredTransactions] = useState(
+    transactions.flatMap((group) =>
+      group.items.map((item) => ({
+        ...item,
+        date: group.date,
+        dayOfWeek: group.dayOfWeek,
+      }))
+    )
+  );
 
-  // Tính toán dữ liệu cho biểu đồ
   const chartData = {
     labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
     datasets: [
@@ -43,8 +50,8 @@ const HomeScreen = ({ navigation, transactions }) => {
 
   // Cập nhật dữ liệu biểu đồ dựa trên transactions
   transactions.forEach((group) => {
-    const month = parseInt(group.date.split('/')[1], 10); // Lấy tháng từ ngày
-    const monthIndex = month - 1; // Chỉ số tháng trong mảng labels (0-5)
+    const month = parseInt(group.date.split('/')[1], 10);
+    const monthIndex = month - 1;
 
     group.items.forEach((item) => {
       const amount = parseInt(item.amount.replace(/[^0-9]/g, ''), 10);
@@ -56,13 +63,34 @@ const HomeScreen = ({ navigation, transactions }) => {
     });
   });
 
+  // Chuyển filteredTransactions thành định dạng nhóm theo ngày
+  const groupedTransactions = filteredTransactions.reduce((acc, item) => {
+    const date = item.date;
+    const existingGroup = acc.find((group) => group.date === date);
+    const dayOfWeek = item.dayOfWeek || new Date(
+      date.split('/')[2], // Năm
+      date.split('/')[1] - 1, // Tháng (trừ 1 vì tháng trong JS bắt đầu từ 0)
+      date.split('/')[0] // Ngày
+    ).toLocaleDateString('vi-VN', { weekday: 'long' });
+
+    if (existingGroup) {
+      existingGroup.items.push(item);
+    } else {
+      acc.push({
+        date,
+        dayOfWeek,
+        items: [item],
+      });
+    }
+    return acc;
+  }, []);
+
   const toggleExpand = (date) => {
     setExpandedDate(expandedDate === date ? null : date);
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
@@ -73,7 +101,6 @@ const HomeScreen = ({ navigation, transactions }) => {
         </View>
       </View>
 
-      {/* Biểu đồ */}
       <View style={styles.chartContainer}>
         <View style={styles.chartLegend}>
           <View style={styles.legendItem}>
@@ -127,44 +154,60 @@ const HomeScreen = ({ navigation, transactions }) => {
         </View>
       </View>
 
-      {/* Danh sách giao dịch */}
-      <ScrollView style={styles.transactionsContainer}>
-        {transactions.map((group, index) => (
-          <View key={index} style={styles.transactionGroup}>
-            <TouchableOpacity style={styles.dateHeader} onPress={() => toggleExpand(group.date)}>
-              <Text style={styles.dateText}>{group.date}</Text>
-              <Text style={styles.dayText}>{group.dayOfWeek}</Text>
-            </TouchableOpacity>
+      {/* Thanh tìm kiếm và bộ lọc */}
+      <SearchAndFilter
+        transactions={transactions}
+        onFilterChange={(filtered) => setFilteredTransactions(filtered)}
+      />
 
-            {(expandedDate === group.date || expandedDate === null) && group.items.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.transactionItem}
-                onPress={() => navigation.navigate('AddTransaction', { transactionToEdit: item, date: group.date })}
-              >
-                <View style={styles.transactionIcon}>
-                  <Text style={styles.emoji}>{item.icon}</Text>
-                </View>
-                <View style={styles.transactionInfo}>
-                  <Text style={styles.transactionTitle}>{item.title}</Text>
-                  <Text style={styles.transactionSubtitle}>{item.subtitle}</Text>
-                </View>
-                <View style={styles.transactionAmount}>
-                  <Text style={[styles.amountText, { color: item.type === 'income' ? COLORS.income : COLORS.expense }]}>
-                    {item.amount}
-                  </Text>
-                  <Text style={styles.walletText}>{item.wallet}</Text>
-                </View>
+      <ScrollView style={styles.transactionsContainer}>
+        {groupedTransactions.length > 0 ? (
+          groupedTransactions.map((group, index) => (
+            <View key={index} style={styles.transactionGroup}>
+              <TouchableOpacity style={styles.dateHeader} onPress={() => toggleExpand(group.date)}>
+                <Text style={styles.dateText}>{group.date}</Text>
+                <Text style={styles.dayText}>{group.dayOfWeek}</Text>
               </TouchableOpacity>
-            ))}
-          </View>
-        ))}
+
+              {(expandedDate === group.date || expandedDate === null) &&
+                group.items.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={styles.transactionItem}
+                    onPress={() =>
+                      navigation.navigate('AddTransaction', { transactionToEdit: item, date: group.date })
+                    }
+                  >
+                    <View style={styles.transactionIcon}>
+                      <Text style={styles.emoji}>{item.icon}</Text>
+                    </View>
+                    <View style={styles.transactionInfo}>
+                      <Text style={styles.transactionTitle}>{item.title}</Text>
+                      <Text style={styles.transactionSubtitle}>{item.subtitle}</Text>
+                    </View>
+                    <View style={styles.transactionAmount}>
+                      <Text
+                        style={[
+                          styles.amountText,
+                          { color: item.type === 'income' ? COLORS.income : COLORS.expense },
+                        ]}
+                      >
+                        {item.amount}
+                      </Text>
+                      <Text style={styles.walletText}>{item.wallet}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noDataText}>Không tìm thấy giao dịch nào.</Text>
+        )}
       </ScrollView>
     </View>
   );
 };
 
-// Styles cho HomeScreen
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1e1e2d' },
   header: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
@@ -195,6 +238,7 @@ const styles = StyleSheet.create({
   transactionAmount: { alignItems: 'flex-end', justifyContent: 'center' },
   amountText: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   walletText: { color: '#aaa', fontSize: 14 },
+  noDataText: { color: '#aaa', fontSize: 16, textAlign: 'center', marginTop: 20 },
 });
 
 export default HomeScreen;

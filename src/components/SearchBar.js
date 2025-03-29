@@ -25,9 +25,9 @@ const SearchBar = ({
     if (text.length > 0) {
       const suggestionsList = transactions
         .filter((transaction) =>
-          transaction.name.toLowerCase().includes(text.toLowerCase())
+          transaction.title.toLowerCase().includes(text.toLowerCase())
         )
-        .map((transaction) => transaction.name)
+        .map((transaction) => transaction.title)
         .filter((value, index, self) => self.indexOf(value) === index);
       setSuggestions(suggestionsList);
     } else {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    height: 42, // Giảm height để bù cho borderWidth (42 + 2 = 44)
+    height: 42,
   },
   searchInput: {
     flex: 1,
