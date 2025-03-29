@@ -31,7 +31,7 @@ const BottomTabNavigator = ({ transactions, setTransactions }) => {
       <Tab.Screen
         name="Home"
         options={{
-          tabBarLabel: 'Tổng kê',
+          tabBarLabel: 'Thống kê',
           tabBarIcon: ({ color, size }) => (
             <Icon name="view-dashboard-outline" color={color} size={size} />
           ),
