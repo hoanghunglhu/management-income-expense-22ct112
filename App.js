@@ -5,7 +5,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import MainScreen from './src/screens/MainScreen'; 
 import StatisticsScreen from './src/screens/StatisticsScreen';
 import AddTransactionScreen from './src/screens/AddTransactionScreen'; 
-import { TransactionProvider } from './TransactionContext'; // Import
+import { TransactionContext, TransactionProvider } from './src/contexts/TransactionContext';
 // cài thư viện thêm = code : npm install @react-navigation/native @react-navigation/stack react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated react-native-vector-icons
 // cài thêm thư viện npm install react-native-chart-kit
 // npm install @react-native-async-storage/async-storage
@@ -13,7 +13,8 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <TransactionProvider> {/* Bọc ứng dụng */}
+     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Login"
@@ -37,5 +38,6 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </TransactionProvider>
   );
 }

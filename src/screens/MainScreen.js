@@ -1,10 +1,11 @@
 // src/screens/MainScreen.js
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { LineChart } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TransactionContext } from '../contexts/TransactionContext'; // Import TransactionContext
 
 // Tạo các màn hình con cho từng tab
 const HomeTab = ({ navigation }) => {
@@ -12,6 +13,7 @@ const HomeTab = ({ navigation }) => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [currentBalance, setCurrentBalance] = useState(0);
+  const { transactionUpdate } = useContext(TransactionContext); // Lấy transactionUpdate từ context
 
   // Hàm định dạng số tiền
   const formatNumber = (number) => {
@@ -40,16 +42,13 @@ const HomeTab = ({ navigation }) => {
           setTotalIncome(income);
           setTotalExpenses(expenses);
           setCurrentBalance(income - expenses);
-          const unsubscribe = navigation.addListener('focus', () => {
-            fetchTransactions(); // Gọi lại hàm lấy dữ liệu
-          });
         }
       } catch (error) {
         console.error('Error fetching transactions:', error);
       }
     };
     fetchTransactions();
-  }, []);
+  }, [transactionUpdate]); // Thêm transactionUpdate vào dependency array
 
   // Hàm render mỗi giao dịch
   const renderTransaction = ({ item }) => (

@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { addTransaction } from '../services/TransactionService';
+import { TransactionContext } from '../contexts/TransactionContext'; // Import TransactionContext
 
 const AddTransactionScreen = ({ navigation }) => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState('income'); // Mặc định là thu
   const [date, setDate] = useState(''); // Thêm state cho ngày
+  const { updateTransactions } = useContext(TransactionContext); // Lấy updateTransactions từ context
 
   const handleAddTransaction = async () => {
     if (!description || !amount || !date) {
