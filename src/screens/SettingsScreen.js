@@ -23,9 +23,10 @@ const SettingsScreen = () => {
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
   const [categoryList, setCategoryList] = useState([]);
-  
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false); // Kiểm tra chế độ xóa
   const [selectedCategory, setSelectedCategory] = useState(null); // Lưu item đã chọn để xóa
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false); // Modal xác nhận xóa
 
   
   useEffect(() => {
@@ -112,11 +113,27 @@ const SettingsScreen = () => {
     setEditModalVisible(false);
   };
 
+const handleDeleteCategory = async () => {
+  if (selectedCategory) {
+    const updatedCategories = categoryList.filter(
+      (item) => item.id !== selectedCategory.id
+    );
 
+    try {
+      // Lưu danh sách đã được cập nhật vào AsyncStorage
+      await AsyncStorage.setItem(`categories_${selectedTab}`, JSON.stringify(updatedCategories));
+      setCategoryList(updatedCategories);  // Cập nhật lại danh sách trong state
+      setDeleteModalVisible(false);  // Đóng Modal
+      setIsDeleteMode(false);  // Tắt chế độ xóa
+      setSelectedCategory(null);  // Reset mục đã chọn
+    } catch (error) {
+      console.error("Lỗi khi lưu vào AsyncStorage", error);
+    }
+  }
+};
 
   
   return (
-  
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -147,7 +164,20 @@ const SettingsScreen = () => {
     <TouchableOpacity 
       style={[styles.categoryItem, isListView && styles.listItem]}
       onPress={() => {
-         {
+        if (isDeleteMode) {
+          // Kiểm tra nếu mục được chọn là một trong 5 mục không thể xóa
+          const isIncomeCategory = defaultCategories.income.some(incomeItem => incomeItem.id === item.id);
+          
+          if (isIncomeCategory) {
+            alert('Không thể xóa mục này!');  // Thông báo nếu là mục không thể xóa
+            setIsDeleteMode(false); // Thoát khỏi chế độ xóa
+            return;  // Dừng lại không mở modal xác nhận xóa
+          }
+
+          // Nếu không phải mục không thể xóa, mở modal xác nhận xóa
+          setSelectedCategory(item);
+          setDeleteModalVisible(true); // Hiển thị Modal xác nhận xóa
+        } else {
           if (item.isAddButton) {
             setAddModalVisible(true);
             setGroupName('');
@@ -282,6 +312,31 @@ const SettingsScreen = () => {
         </View>
       </Modal>
 
+      {/* Modal xác nhận xóa */}
+<Modal
+  animationType="fade"
+  transparent={true}
+  visible={deleteModalVisible}
+  onRequestClose={() => setDeleteModalVisible(false)}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      {selectedCategory ? (
+        <Text style={styles.modalText}>Bạn có chắc chắn muốn xóa "{selectedCategory.name}" không?</Text>
+      ) : (
+        <Text style={styles.modalText}>Vui lòng chọn một danh mục để xóa.</Text>
+      )}
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.cancelButton} onPress={() => setDeleteModalVisible(false)}>
+          <Text style={styles.modalCloseText}>Hủy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.addButton} onPress={handleDeleteCategory}>
+          <Text style={styles.modalCloseText}>Xóa</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
   </View>
   );
 };
