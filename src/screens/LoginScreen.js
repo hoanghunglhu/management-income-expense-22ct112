@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ActivityIndicator } from "react-native";
 
 const validUsers = [
   { email: "admin@gmail.com", phone: "0123456789", password: "987654321" },

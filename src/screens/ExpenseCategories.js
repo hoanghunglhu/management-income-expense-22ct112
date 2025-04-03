@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 // Dữ liệu danh mục chi tiêu ban đầu
 const initialCategories = [
   { id: "1", name: "Thực phẩm", icon: "🍎" },
