@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
 const incomeRoutes = require('./routes/incomeRoutes'); // Thêm route cho income
 const errorHandler = require('./middleware/errorHandler');
 const expenseRoutes = require('./routes/expenseRoutes');
