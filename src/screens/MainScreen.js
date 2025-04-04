@@ -37,7 +37,7 @@ const MainScreen = () => {
         name="Statistics"
         component={StatisticsScreen}
         options={{
-          tabBarLabel: 'Sổ giao dịch',
+          tabBarLabel: 'Thống kê',
           tabBarLabelStyle: {
             fontSize: 12,
           },

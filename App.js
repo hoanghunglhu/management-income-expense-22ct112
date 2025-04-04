@@ -12,7 +12,7 @@ import AddTransactionScreen from "./src/screens/AddTransactionScreen";
 import ReportsScreen from "./src/screens/ReportsScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import ExpenseCategories from "./src/screens/ExpenseCategories";
-
+import ProfileScreen from "./src/screens/ProfileScreen";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -41,31 +41,20 @@ const BottomTabNavigator = () => {
         name="Statistics"
         component={StatisticsScreen}
         options={{
-          tabBarLabel: "Sổ giao dịch",
+          tabBarLabel: "Thống kê",
           tabBarIcon: ({ color, size }) => (
             <Icon name="book-outline" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="AddTransaction"
+        name=" "
         component={AddTransactionScreen}
         options={{
-          tabBarLabel: "Thêm giao dịch",
           tabBarIcon: ({ color, size }) => (
             <View style={styles.addButton}>
               <Icon name="plus" color="#fff" size={size} />
             </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Reports"
-        component={ReportsScreen}
-        options={{
-          tabBarLabel: "Báo cáo",
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="chart-pie" color={color} size={size} />
           ),
         }}
       />

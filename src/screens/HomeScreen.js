@@ -1,148 +1,89 @@
 // src/screens/HomeScreen.js
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  Image, 
-  ScrollView, 
-  TouchableOpacity 
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 
-// Get screen width for chart
 const screenWidth = Dimensions.get('window').width;
 
-// Màu sắc nhất quán trong toàn ứng dụng
 const COLORS = {
-  income: '#2ECC71', // Màu xanh lá cho thu nhập
-  expense: '#EC407A', // Màu hồng/tím cho chi tiêu
+  income: '#2ECC71',
+  expense: '#EC407A',
 };
 
 const HomeScreen = () => {
-  // State để quản lý thanh expansion (ngày được mở rộng)
   const [expandedDate, setExpandedDate] = useState(null);
-  
-  // PHẦN DISPLAY CHART - BEGIN
-  // Mock data for chart với dữ liệu chính xác từ các giao dịch
+
+  // Mock transactions data (sẽ được lưu vào AsyncStorage)
+  const transactions = [
+    {
+      date: '2022-04-22',
+      dayOfWeek: 'Thứ sáu',
+      items: [
+        { id: 1, icon: '🍔', title: 'Ăn uống', subtitle: 'Riêng tôi', amount: 100000, wallet: 'Ví của tôi', type: 'expense' },
+        { id: 2, icon: '🎁', title: 'Du lịch', subtitle: 'Gia đình', amount: 5000000, wallet: 'Ví của tôi', type: 'expense' },
+        { id: 3, icon: '💰', title: 'Tiền lương', subtitle: 'Riêng tôi', amount: 30000000, wallet: 'Ví của tôi', type: 'income' },
+        { id: 7, icon: '🌿', title: 'Chăm sóc thú cưng', subtitle: 'Thú cưng', amount: 500000, wallet: 'Ví của tôi', type: 'expense' },
+      ],
+    },
+    {
+      date: '2022-04-25',
+      dayOfWeek: 'Thứ hai',
+      items: [
+        { id: 4, icon: '👩‍⚕️', title: 'Chữa bệnh', subtitle: 'Thú cưng', amount: 500000, wallet: 'Ví của tôi', type: 'expense' },
+        { id: 5, icon: '🚌', title: 'Di chuyển', subtitle: 'Riêng tôi', amount: 20000, wallet: 'Ví của tôi', type: 'expense' },
+        { id: 6, icon: '💧', title: 'Hóa đơn nước', subtitle: 'Riêng tôi', amount: 300000, wallet: 'Ví của tôi', type: 'expense' },
+      ],
+    },
+  ];
+
+  // Lưu transactions vào AsyncStorage khi màn hình được tải
+  useEffect(() => {
+    const saveTransactions = async () => {
+      try {
+        const flatTransactions = transactions.flatMap(group => 
+          group.items.map(item => ({
+            date: group.date,
+            description: item.title,
+            amount: item.amount,
+            type: item.type,
+          }))
+        );
+        await AsyncStorage.setItem('transactions', JSON.stringify(flatTransactions));
+      } catch (error) {
+        console.error('Error saving transactions:', error);
+      }
+    };
+    saveTransactions();
+  }, []);
+
   const chartData = {
     labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
     datasets: [
-      {
-        data: [0, 0, 0, 30000000, 0, 0], // Thu nhập (chỉ có tháng 4 có tiền lương)
-        color: (opacity = 1) => `rgba(46, 204, 113, ${opacity})`, // Màu xanh lá cho thu nhập
-        strokeWidth: 2
-      },
-      {
-        data: [0, 0, 0, 5920000, 0, 0], // Chi tiêu (tổng các khoản chi trong tháng 4)
-        color: (opacity = 1) => `rgba(236, 64, 122, ${opacity})`, // Màu hồng cho chi tiêu
-        strokeWidth: 2
-      }
+      { data: [0, 0, 0, 30000000, 0, 0], color: (opacity = 1) => `rgba(46, 204, 113, ${opacity})`, strokeWidth: 2 },
+      { data: [0, 0, 0, 5920000, 0, 0], color: (opacity = 1) => `rgba(236, 64, 122, ${opacity})`, strokeWidth: 2 },
     ],
-    legend: ['Thu nhập', 'Chi tiêu']
+    legend: ['Thu nhập', 'Chi tiêu'],
   };
-  // PHẦN DISPLAY CHART - END
 
-  // PHẦN THANH EXPANSION - BEGIN
-  // Mock transactions data với dữ liệu được sắp xếp theo thứ tự thời gian
-  const transactions = [
-    {
-      date: '22/04/2022',
-      dayOfWeek: 'Thứ sáu',
-      items: [
-        {
-          id: 1,
-          icon: '🍔',
-          title: 'Ăn uống',
-          subtitle: 'Riêng tôi',
-          amount: '-100,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        },
-        {
-          id: 2,
-          icon: '🎁',
-          title: 'Du lịch',
-          subtitle: 'Gia đình',
-          amount: '-5,000,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        },
-        {
-          id: 3,
-          icon: '💰',
-          title: 'Tiền lương',
-          subtitle: 'Riêng tôi',
-          amount: '+30,000,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'income' // Thu nhập
-        },
-        {
-          id: 7,
-          icon: '🌿',
-          title: 'Chăm sóc thú cưng',
-          subtitle: 'Thú cưng',
-          amount: '-500,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        }
-      ]
-    },
-    {
-      date: '25/04/2022',
-      dayOfWeek: 'Thứ hai',
-      items: [
-        {
-          id: 4,
-          icon: '👩‍⚕️',
-          title: 'Chữa bệnh',
-          subtitle: 'Thú cưng',
-          amount: '-500,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        },
-        {
-          id: 5,
-          icon: '🚌',
-          title: 'Di chuyển',
-          subtitle: 'Riêng tôi',
-          amount: '-20,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        },
-        {
-          id: 6,
-          icon: '💧',
-          title: 'Hóa đơn nước',
-          subtitle: 'Riêng tôi',
-          amount: '-300,000 đ',
-          wallet: 'Ví của tôi',
-          type: 'expense' // Chi tiêu
-        }
-      ]
-    }
-  ];
-
-  // Hàm mở rộng/thu gọn khi click vào ngày
   const toggleExpand = (date) => {
-    if (expandedDate === date) {
-      setExpandedDate(null);
-    } else {
-      setExpandedDate(date);
-    }
+    setExpandedDate(expandedDate === date ? null : date);
   };
-  // PHẦN THANH EXPANSION - END
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.userInfo}>
-          <Image 
-            source={{ uri: 'https://via.placeholder.com/40' }} 
-            style={styles.avatar} 
-          />
+          <Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} />
           <View>
             <Text style={styles.greeting}>Hi,</Text>
             <Text style={styles.userName}>Minh Hoa</Text>
@@ -150,7 +91,7 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* PHẦN DISPLAY CHART - BEGIN */}
+      {/* Chart */}
       <View style={styles.chartContainer}>
         <View style={styles.chartLegend}>
           <View style={styles.legendItem}>
@@ -162,8 +103,6 @@ const HomeScreen = () => {
             <Text style={styles.legendText}>Chi tiêu</Text>
           </View>
         </View>
-        
-        {/* Biểu đồ với trục Y hiển thị giá trị tiền */}
         <View style={styles.chartWithYAxis}>
           <View style={styles.yAxis}>
             <Text style={styles.yAxisLabel}>30tr</Text>
@@ -173,11 +112,9 @@ const HomeScreen = () => {
             <Text style={styles.yAxisLabel}>6tr</Text>
             <Text style={styles.yAxisLabel}>0</Text>
           </View>
-          
           <LineChart
             data={chartData}
-
-            width={screenWidth - 80} // Thu nhỏ để có chỗ cho trục Y
+            width={screenWidth - 80}
             height={180}
             chartConfig={{
               backgroundColor: '#272836',
@@ -186,21 +123,9 @@ const HomeScreen = () => {
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: '6',
-                strokeWidth: '2',
-              },
-              // Định dạng đơn vị tiền tệ
-              formatYLabel: (value) => {
-                return Number(value / 1000000).toFixed(0) + 'tr';
-              },
-              // Hiển thị tooltip khi người dùng chạm vào một điểm
-              propsForLabels: {
-                fontSize: 10,
-              },
+              style: { borderRadius: 16 },
+              propsForDots: { r: '6', strokeWidth: '2' },
+              formatYLabel: (value) => `${Number(value / 1000000).toFixed(0)}tr`,
             }}
             bezier
             style={styles.chart}
@@ -209,31 +134,22 @@ const HomeScreen = () => {
             withVerticalLabels={true}
             withHorizontalLabels={false}
             fromZero={true}
-            // Bật tính năng tooltip để hiển thị giá trị khi chạm vào điểm
             withShadow={false}
-            onDataPointClick={({value, dataset, getColor}) => {
-              // Hiển thị popup giá trị khi người dùng chạm vào điểm
-              if (value > 0) {
-                alert(value.toLocaleString('vi-VN') + ' đ');
-              }
+            onDataPointClick={({ value }) => {
+              if (value > 0) alert(value.toLocaleString('vi-VN') + ' đ');
             }}
           />
         </View>
       </View>
-      {/* PHẦN DISPLAY CHART - END */}
 
-      {/* PHẦN THANH EXPANSION - BEGIN */}
+      {/* Transactions */}
       <ScrollView style={styles.transactionsContainer}>
         {transactions.map((group, index) => (
           <View key={index} style={styles.transactionGroup}>
-            <TouchableOpacity 
-              style={styles.dateHeader} 
-              onPress={() => toggleExpand(group.date)}
-            >
+            <TouchableOpacity style={styles.dateHeader} onPress={() => toggleExpand(group.date)}>
               <Text style={styles.dateText}>{group.date}</Text>
               <Text style={styles.dayText}>{group.dayOfWeek}</Text>
             </TouchableOpacity>
-            
             {(expandedDate === group.date || expandedDate === null) && group.items.map((item) => (
               <View key={item.id} style={styles.transactionItem}>
                 <View style={styles.transactionIcon}>
@@ -244,11 +160,8 @@ const HomeScreen = () => {
                   <Text style={styles.transactionSubtitle}>{item.subtitle}</Text>
                 </View>
                 <View style={styles.transactionAmount}>
-                  <Text style={[
-                    styles.amountText, 
-                    { color: item.type === 'income' ? COLORS.income : COLORS.expense }
-                  ]}>
-                    {item.amount}
+                  <Text style={[styles.amountText, { color: item.type === 'income' ? COLORS.income : COLORS.expense }]}>
+                    {item.type === 'income' ? '+' : '-'}{formatNumber(item.amount)} đ
                   </Text>
                   <Text style={styles.walletText}>{item.wallet}</Text>
                 </View>
@@ -257,11 +170,16 @@ const HomeScreen = () => {
           </View>
         ))}
       </ScrollView>
-      {/* PHẦN THANH EXPANSION - END */}
     </View>
   );
 };
 
+// Hàm định dạng số tiền
+const formatNumber = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+// Styles ban đầu của bạn
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -293,7 +211,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // Styles for chart display
   chartContainer: {
     backgroundColor: '#272836',
     borderRadius: 12,
@@ -325,11 +242,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 16,
   },
-  // Styles for Y-axis
   chartWithYAxis: {
-    flexDirection: 'row', // Hiển thị trục Y và biểu đồ trên cùng một hàng
-    alignItems: 'center', // Căn giữa theo chiều dọc
-    marginLeft: -10, // Giảm khoảng cách giữa trục Y và biểu đồ
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: -10,
   },
   yAxis: {
     width: 40,
@@ -342,10 +258,9 @@ const styles = StyleSheet.create({
   yAxisLabel: {
     fontSize: 12,
     color: 'white',
-    marginBottom: 15, // Giảm khoảng cách giữa các nhãn Y
+    marginBottom: 15,
     textAlign: 'right',
   },
-  // Styles for expansion section
   transactionsContainer: {
     flex: 1,
     paddingHorizontal: 16,
