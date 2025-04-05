@@ -7,7 +7,7 @@ const AuthContext = ({ navigation }) => {
     const checkToken = async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
-        if (token) {
+        if (token !== undefined) {
           navigation.replace('MainScreen');
         } else {
           navigation.replace('LoginScreen');
