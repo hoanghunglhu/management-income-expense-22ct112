@@ -123,3 +123,79 @@ exports.updateExpense = async (req, res, next) => {
         next(error);
     }
 };
+exports.getExpensesByName = async (req, res, next) => {
+    try {
+        const { name } = req.query;
+
+        // Debug: Log query nhận được
+        console.log('Received get expenses request:', { query: req.query });
+
+        // Tạo điều kiện tìm kiếm
+        let query = {};
+        if (name) {
+            // Tìm kiếm không phân biệt hoa thường, sử dụng regex
+            query.description = { $regex: name, $options: 'i' };
+        }
+
+        // Lấy danh sách expenses
+        const expenses = await Expense.find(query);
+
+        res.status(200).json({
+            success: true,
+            count: expenses.length,
+            data: expenses,
+        });
+    } catch (error) {
+        console.error('Error in getExpensesByName:', error);
+        next(error);
+    }
+};
+
+exports.getExpenses = async (req, res) => {
+    try {
+        const { limit = 10, page = 1, startDate, endDate, name } = req.query;
+        const skip = (page - 1) * limit;
+
+        // Tạo query object (không lọc theo userId)
+        let query = {};
+
+        // Thêm điều kiện lọc theo ngày nếu có
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
+        // Thêm điều kiện lọc theo description (name) nếu có
+        if (name) {
+            query.description = { $regex: name, $options: 'i' }; // Tìm kiếm không phân biệt hoa thường
+        }
+
+        // Lấy danh sách expenses
+        const expenses = await Expense.find(query)
+            .sort({ date: -1 }) // Sắp xếp theo ngày giảm dần
+            .skip(skip)
+            .limit(parseInt(limit))
+            .lean();
+
+        // Đếm tổng số documents
+        const total = await Expense.countDocuments(query);
+
+        res.status(200).json({
+            success: true,
+            data: expenses,
+            pagination: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                totalPages: Math.ceil(total / limit),
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy danh sách expense',
+            error: error.message,
+        });
+    }
+};

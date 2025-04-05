@@ -1,9 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const incomeRoutes = require('./routes/incomeRoutes'); // Thêm route cho income
-const errorHandler = require('./middleware/errorHandler');
+const incomeRoutes = require('./routes/incomeRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 // Load biến môi trường từ .env
 dotenv.config();
@@ -17,7 +17,7 @@ connectDB();
 app.use(express.json());
 
 // Routes
-app.use('/api/incomes', incomeRoutes); // Thêm route cho incomes
+app.use('/api/incomes', incomeRoutes);
 app.use('/api/expenses', expenseRoutes);
 
 // Middleware xử lý lỗi

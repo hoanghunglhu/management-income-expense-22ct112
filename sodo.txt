@@ -1,0 +1,14 @@
+QLKS/
+│
+├── config/
+│   └── db.js
+├── models/
+├── routes/
+├── controllers/
+├── middleware/
+├── .env
+├── .gitignore
+├── server.js
+├── package.json
+├── README.md
+└── node_modules/
