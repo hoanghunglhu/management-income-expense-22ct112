@@ -1,17 +1,17 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { View, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import MainScreen from './src/screens/MainScreen';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LoginScreen from './src/screens/LoginScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import StatisticsScreen from './src/screens/StatisticsScreen';
-import AddTransactionScreen from './src/screens/AddTransactionScreen';
-import ReportsScreen from './src/screens/ReportsScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { View, StyleSheet } from 'react-native';
+import LoginScreen from "./src/screens/LoginScreen";
+import HomeScreen from "./src/screens/HomeScreen";
+import StatisticsScreen from "./src/screens/StatisticsScreen";
+import AddTransactionScreen from "./src/screens/AddTransactionScreen";
+import ReportsScreen from "./src/screens/ReportsScreen";
+import SettingsScreen from "./src/screens/SettingsScreen";
+import ExpenseCategories from "./src/screens/ExpenseCategories";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,8 +21,8 @@ const BottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#EC407A',
-        tabBarInactiveTintColor: '#999',
+        tabBarActiveTintColor: "#EC407A",
+        tabBarInactiveTintColor: "#999",
         headerShown: false,
         tabBarShowLabel: true,
       }}
@@ -31,7 +31,7 @@ const BottomTabNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Tổng kê',
+          tabBarLabel: "Tổng kê",
           tabBarIcon: ({ color, size }) => (
             <Icon name="view-dashboard-outline" color={color} size={size} />
           ),
@@ -41,7 +41,7 @@ const BottomTabNavigator = () => {
         name="Statistics"
         component={StatisticsScreen}
         options={{
-          tabBarLabel: 'Sổ giao dịch',
+          tabBarLabel: "Sổ giao dịch",
           tabBarIcon: ({ color, size }) => (
             <Icon name="book-outline" color={color} size={size} />
           ),
@@ -51,7 +51,7 @@ const BottomTabNavigator = () => {
         name="AddTransaction"
         component={AddTransactionScreen}
         options={{
-          tabBarLabel: 'Thống kê',
+          tabBarLabel: "Thêm giao dịch",
           tabBarIcon: ({ color, size }) => (
             <View style={styles.addButton}>
               <Icon name="plus" color="#fff" size={size} />
@@ -63,9 +63,19 @@ const BottomTabNavigator = () => {
         name="Reports"
         component={ReportsScreen}
         options={{
-          tabBarLabel: 'Báo cáo',
+          tabBarLabel: "Báo cáo",
           tabBarIcon: ({ color, size }) => (
             <Icon name="chart-pie" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Categories"
+        component={ExpenseCategories}
+        options={{
+          tabBarLabel: "Danh mục",
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="format-list-bulleted" color={color} size={size} />
           ),
         }}
       />
@@ -73,7 +83,7 @@ const BottomTabNavigator = () => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarLabel: 'Cài đặt',
+          tabBarLabel: "Cài đặt",
           tabBarIcon: ({ color, size }) => (
             <Icon name="cog-outline" color={color} size={size} />
           ),
@@ -87,7 +97,6 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -95,27 +104,27 @@ export default function App() {
         />
         <Stack.Screen
           name="Main"
-          component={MainScreen}
-          options={{ headerShown: false }} // Ẩn header cho MainScreen nếu không cần
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
         />
-      </Stack.Navigator >
-    </NavigationContainer >
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#272836',
+    backgroundColor: "#272836",
     borderTopWidth: 0,
     elevation: 0,
     height: 60,
   },
   addButton: {
-    backgroundColor: '#EC407A',
+    backgroundColor: "#EC407A",
     width: 40,
     height: 40,
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
